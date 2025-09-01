@@ -74,7 +74,7 @@ namespace RestaurantApi.Services
                issuer: configuration.GetValue<string>("JwtSetting:Issuer"),
                audience: configuration.GetValue<string>("JwtSetting:Audience"),
                claims: claims,
-               expires: DateTime.UtcNow.AddMinutes(10),
+               expires: DateTime.UtcNow.AddHours(1),
                signingCredentials: creds
            );
 
@@ -113,7 +113,6 @@ namespace RestaurantApi.Services
             rng.GetBytes(randomNum);
             return Convert.ToBase64String(randomNum);
         }
-
         public async Task<TokenResponseDTO?> RefreshTokensAsync(RequestRefreshTokenDto request)
         {
             var user = await ValidateRefreshTokenAsync(request.Id, request.RefreshToken);
