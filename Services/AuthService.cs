@@ -20,7 +20,7 @@ namespace RestaurantApi.Services
     {
         public async Task<TokenResponseDTO?> LoginAsync(EmployeeLoginDTO request)
         {
-            var employee = await context.Employees.FirstOrDefaultAsync(e => e.Email == request.Email);
+            var employee = await repository.GetEmployeeByEmail(request.Email);
 
             if (employee == null)
             {
@@ -38,7 +38,7 @@ namespace RestaurantApi.Services
         }
         public async Task<Employee?> RegisterEmployeeAsync(EmployeeDTO request)
         {
-            if (await context.Employees.AnyAsync(e => e.Email == request.Email))
+            if (await repository.GetEmployeeByEmail(request.Email) == null)
             {
                 return null;
             }
@@ -82,7 +82,7 @@ namespace RestaurantApi.Services
         }
         private async Task<Employee?> ValidateRefreshTokenAsync(int employeeId, string refreshToken)
         {
-            var employee = await context.Employees.FindAsync(employeeId);
+            var employee = await repository.GetEmployeeById(employeeId);
 
             if (employee is null || employee.RefreshToken != refreshToken || employee.RefreshTokenExpireTime <= DateTime.UtcNow)
             {
