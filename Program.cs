@@ -61,6 +61,7 @@ namespace RestaurantApi
             builder.Services.AddScoped<IMenuItemService, MenuItemService>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IAvailabilityService ,AvailabilityService>();
+            builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddAuthorization();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

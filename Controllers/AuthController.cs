@@ -46,36 +46,27 @@ namespace RestaurantApi.Controllers
             return Ok(ApiResponse.Ok("Login successful"));
         }
 
-        [HttpPost("RefreshToken")] // Dixa bättra response meddeleanden
-        public async Task<ActionResult<TokenResponseDTO>> RefreshToken()
+        [HttpPost("RefreshToken")] 
+        public async Task<ActionResult<ApiResponse>> RefreshToken()
         {
-
             if (!HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
             {
-                return Unauthorized(ApiResponse.Error("Cant find cookie"));
+                return Unauthorized(ApiResponse.Error("No refresh token found"));
             }
+
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var accessToken = HttpContext.Request.Cookies["accessToken"];
+             
+                var employee = await employeeService.GetEmployeeByValidRefreshTokenAsync(refreshToken);
 
-                if (string.IsNullOrEmpty(accessToken))
+                if (employee == null)
                 {
-                    return Unauthorized(ApiResponse.Error("Cant find accesstoken"));
+                    return Unauthorized(ApiResponse.Error("Invalid or expired refresh token"));
                 }
-
-                var tokenWithoutValidation = tokenHandler.ReadJwtToken(accessToken); 
-                var employeeClaim = tokenWithoutValidation.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-                if (string.IsNullOrEmpty(employeeClaim) || !int.TryParse(employeeClaim, out int employeeId))
-                {
-                    return Unauthorized(ApiResponse.Error("soemthing went wrong"));
-                }
-
 
                 var refreshRequest = new RequestRefreshTokenDto
                 {
-                    Id = employeeId,
+                    Id = employee.EmployeeId,
                     RefreshToken = refreshToken
                 };
 
@@ -83,28 +74,17 @@ namespace RestaurantApi.Controllers
 
                 if (tokenResponse == null)
                 {
-                    return Unauthorized(ApiResponse.Error("soemthing went wrong"));
+                    return Unauthorized(ApiResponse.Error("Token refresh failed"));
                 }
 
-                HttpContext.Response.Cookies.Append("accessToken", tokenResponse.AccessToken, GetCookieOptionsData.AccessTokenCookie());
-                HttpContext.Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, GetCookieOptionsData.RefreshTokenCookie());
+                SetAuthenticationCookies.SetAuthenticationCookie(HttpContext, tokenResponse.AccessToken, tokenResponse.RefreshToken, context);
 
-                return Ok(ApiResponse.Ok("Refreshed"));
+                return Ok(ApiResponse.Ok("Token refreshed successfully"));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Unauthorized(ApiResponse.Error($"Token refresh failed: {ex.Message}"));
+                return Unauthorized(ApiResponse.Error("Token refresh failed"));
             }
-
-
-
-            //var result = await service.RefreshTokensAsync(requestRefreshTokenDto);
-            //if (result is null || result.AccessToken is null || result.RefreshToken is null)
-            //{
-            //    return Unauthorized("Invalid refrsh token");
-            //};
-
-            //return Ok(result);
         }
         [HttpGet("Staff")]
         [Authorize]

@@ -35,7 +35,12 @@ namespace RestaurantApi.Services
             if (string.IsNullOrEmpty(refreshToken))
                 return null;
 
-            return await employeeRepository.GetEmployeeByRefreshToken(refreshToken);
+            var employee = await employeeRepository.GetEmployeeByRefreshToken(refreshToken);
+
+            if (employee?.RefreshTokenExpireTime <= DateTime.UtcNow)
+                return null;
+
+            return employee;
         }
 
     }
