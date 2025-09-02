@@ -1,9 +1,16 @@
-﻿namespace RestaurantApi.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RestaurantApi.DTO
 {
     public class EmployeeDTO
     {
-        public string Email { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
+        [Required]
+        [StringLength(50)]
+        public string Name { get; set; } = null!;
+        [Required]
+        [StringLength(100)]
+        public string Email { get; set; } = null!;
+
         public string Password { get; set; } = string.Empty;
     }
 }

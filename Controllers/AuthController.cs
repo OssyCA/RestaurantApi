@@ -21,6 +21,10 @@ namespace RestaurantApi.Controllers
         [HttpPost("RegisterEmployee")]
         public async Task<ActionResult<ApiResponse<Employee>>> EmployeeRegister(EmployeeDTO request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ApiResponse<Employee>.Error("Invalid input"));
+            }
             var employee = await service.RegisterEmployeeAsync(request);
 
             if (employee == null)
