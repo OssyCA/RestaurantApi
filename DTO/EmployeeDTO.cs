@@ -9,6 +9,7 @@ namespace RestaurantApi.DTO
         public string Name { get; set; } = null!;
         [Required]
         [StringLength(100)]
+        [EmailAddress]
         public string Email { get; set; } = null!;
 
         public string Password { get; set; } = string.Empty;
