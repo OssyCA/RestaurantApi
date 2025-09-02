@@ -38,10 +38,12 @@ namespace RestaurantApi.Services
         }
         public async Task<Employee?> RegisterEmployeeAsync(EmployeeDTO request)
         {
-            if (await repository.GetEmployeeByEmail(request.Email) == null)
+            var existingEmployee = await repository.GetEmployeeByEmail(request.Email);
+            if (existingEmployee != null)
             {
                 return null;
             }
+
 
             var employee = new Employee();
             var hashedPassword = new PasswordHasher<Employee>()
