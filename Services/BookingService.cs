@@ -65,15 +65,6 @@ namespace RestaurantApi.Services
                 return (false, errorMessage);
             }
 
-            var tempBookingDTO = new BookingDTO
-            {
-                TableId = request.TableId,
-                StartAt = request.StartAt,
-                Amount = request.Amount,
-                CustomerEmail = request.CustomerEmail,
-                CustomerName = request.CustomerName,
-                CustomerPhone = request.CustomerPhone
-            };
 
             if (!await availabilityService.IsTableAvailableAsync(request.TableId, request.StartAt, request.Amount, id))
             {

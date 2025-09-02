@@ -12,8 +12,8 @@ using RestaurantApi.Data;
 namespace RestaurantApi.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250831133817_AddedCustomerToBooking")]
-    partial class AddedCustomerToBooking
+    [Migration("20250902154328_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,11 +81,14 @@ namespace RestaurantApi.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CustomerId");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Phone")
                         .IsUnique();
 
                     b.ToTable("Customers");
@@ -176,7 +179,13 @@ namespace RestaurantApi.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
+
                     b.HasKey("TableId");
+
+                    b.HasIndex("TableNumber")
+                        .IsUnique();
 
                     b.ToTable("RestaurantTables");
                 });

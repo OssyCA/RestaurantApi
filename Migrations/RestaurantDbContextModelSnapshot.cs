@@ -176,7 +176,13 @@ namespace RestaurantApi.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
+
                     b.HasKey("TableId");
+
+                    b.HasIndex("TableNumber")
+                        .IsUnique();
 
                     b.ToTable("RestaurantTables");
                 });

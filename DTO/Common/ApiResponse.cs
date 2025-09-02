@@ -18,7 +18,7 @@
         {
             Success = false,
             Message = message,
-            Errors = errors ?? new()
+            Errors = errors ?? []
         };
     }
 

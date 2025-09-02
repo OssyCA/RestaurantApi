@@ -19,7 +19,7 @@ namespace RestaurantApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Phone = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,6 +68,7 @@ namespace RestaurantApi.Migrations
                 {
                     TableId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TableNumber = table.Column<int>(type: "int", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     BookingLocked = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -82,9 +83,7 @@ namespace RestaurantApi.Migrations
                 {
                     BookingId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
                     RestaurantTableId = table.Column<int>(type: "int", nullable: false),
                     BookedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StartAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -95,12 +94,23 @@ namespace RestaurantApi.Migrations
                 {
                     table.PrimaryKey("PK_Bookings", x => x.BookingId);
                     table.ForeignKey(
+                        name: "FK_Bookings_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Bookings_RestaurantTables_RestaurantTableId",
                         column: x => x.RestaurantTableId,
                         principalTable: "RestaurantTables",
                         principalColumn: "TableId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_CustomerId",
+                table: "Bookings",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RestaurantTableId",
@@ -112,6 +122,18 @@ namespace RestaurantApi.Migrations
                 table: "Customers",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_Phone",
+                table: "Customers",
+                column: "Phone",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RestaurantTables_TableNumber",
+                table: "RestaurantTables",
+                column: "TableNumber",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -121,13 +143,13 @@ namespace RestaurantApi.Migrations
                 name: "Bookings");
 
             migrationBuilder.DropTable(
-                name: "Customers");
-
-            migrationBuilder.DropTable(
                 name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "MenuItems");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "RestaurantTables");

@@ -23,7 +23,10 @@ namespace RestaurantApi.Data
             modelBuilder.Entity<Customer>()
                 .HasIndex(c => c.Phone)
                 .IsUnique();
-
+            
+            modelBuilder.Entity<RestaurantTable>()
+               .HasIndex(t => t.TableNumber)
+               .IsUnique();
 
             modelBuilder.Entity<Booking>(entity =>
             {

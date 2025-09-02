@@ -83,7 +83,7 @@ namespace RestaurantApi.Services
             await repository.EmployeRefreshToken(employee, refreshToken);
             return refreshToken;
         }
-        private string GetGenerateRefreshToken()
+        private static string GetGenerateRefreshToken()
         {
             var randomNum = new byte[32];
             using var rng = RandomNumberGenerator.Create();
