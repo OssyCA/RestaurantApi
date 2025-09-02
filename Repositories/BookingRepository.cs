@@ -8,7 +8,7 @@ namespace RestaurantApi.Repositories
 {
     public class BookingRepository(RestaurantDbContext context, ICustomerRepository customerRepository) : IBookingRepository
     {
-        public async Task<Booking> CreateBooking(BookingDTO request)
+        public async Task<Booking?> CreateBooking(BookingDTO request)
         {
             var customer = await customerRepository.GetOrCreateCustomerAsync(
                 request.CustomerName,
@@ -49,7 +49,7 @@ namespace RestaurantApi.Repositories
                .Include(b => b.RestaurantTable)
                .ToListAsync();
         }
-        public async Task<BookingDTO> GetBooking(int id)
+        public async Task<BookingDTO?> GetBooking(int id)
         {
             var booking = await context.Bookings
                 .Include(b => b.Customer)
@@ -59,6 +59,7 @@ namespace RestaurantApi.Repositories
             {
                 return null; 
             }
+
 
             return new BookingDTO
             {
@@ -70,7 +71,7 @@ namespace RestaurantApi.Repositories
                 StartAt = booking.StartAt
             };
         }
-        public async Task<UpdateBookingDTO> UpdateBooking(int id, UpdateBookingDTO request)
+        public async Task<UpdateBookingDTO?> UpdateBooking(int id, UpdateBookingDTO request)
         {
             var booking = await context.Bookings
                 .Include(b => b.Customer)

@@ -8,7 +8,7 @@ namespace RestaurantApi.Services.IServices
     {
         Task<ApiResponse<Booking>> CreateBooking(BookingDTO request);
         Task<List<AllBookingDTO>> GetAllBookings();
-        Task<BookingDTO> GetBooking(int id);
+        Task<BookingDTO?> GetBooking(int id);
         Task<(bool Success,  List<string> ErrorMessages)> UpdateBooking(int id, UpdateBookingDTO request);
         Task<(bool Success, List<string> ErrorMessages)> DeleteBooking(int id);
     }

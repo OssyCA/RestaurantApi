@@ -25,14 +25,33 @@ namespace RestaurantApi.Repositories
             return table.TableId;
         }
 
-        public Task<bool> DeleteTable(int id)
+        public async Task<bool> DeleteTable(int id)
         {
-            throw new NotImplementedException();
+            var deletedRows = await context.RestaurantTables
+               .Where(b => b.TableId == id)
+               .ExecuteDeleteAsync();
+
+            return deletedRows > 0;
         }
 
-        public Task<RestaurantTable?> UpdateTableAsync(int id, UpdateTableDTO dto)
+        public async Task<RestaurantTable?> UpdateTableAsync(int id, UpdateTableDTO dto)
         {
-            throw new NotImplementedException();
+            var table = await context.RestaurantTables.FirstOrDefaultAsync(t => t.TableId == id);
+
+            if (table == null)
+                return null;
+
+            if (dto.TableNumber.HasValue)
+                table.TableNumber = dto.TableNumber.Value;
+
+            if (dto.Capacity.HasValue)
+                table.Capacity = dto.Capacity.Value;
+
+            if (dto.BookingLocked.HasValue)
+                table.BookingLocked = dto.BookingLocked.Value;
+
+            await context.SaveChangesAsync();
+            return table;
         }
     }
 }

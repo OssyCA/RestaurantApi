@@ -43,7 +43,7 @@ namespace RestaurantApi.Services
 
             return bookingDTOs;
         }
-        public async Task<BookingDTO> GetBooking(int id)
+        public async Task<BookingDTO?> GetBooking(int id)
         {
             var booking = await repository.GetBooking(id);
             return booking;
