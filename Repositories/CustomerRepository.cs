@@ -8,10 +8,10 @@ namespace RestaurantApi.Repositories
     public class CustomerRepository(RestaurantDbContext context) : ICustomerRepository
     {
         private static string? NormalizeEmail(string email) => email?.Trim().ToLowerInvariant();
-        private static string? NormalizePhone(string phone)
+        private static string? NormalizePhone(string? phone)
         {
             if (string.IsNullOrWhiteSpace(phone)) return null;
-            var digits = new string(phone.Where(ch => char.IsDigit(ch) || ch == '+').ToArray());
+            var digits = new string([.. phone.Where(ch => char.IsDigit(ch) || ch == '+')]);
             return string.IsNullOrWhiteSpace(digits) ? null : digits;
         }
         public async Task<Customer?> GetCustomerByEmailOrPhoneAsync(string email, string phone)
@@ -71,14 +71,24 @@ namespace RestaurantApi.Repositories
             }
         }
 
-        public Task<Customer?> UpdateCustomerAsync(Customer customer)
+        public async Task<Customer?> UpdateCustomerAsync(Customer customer)
         {
-            throw new NotImplementedException();
+            customer.Email = NormalizeEmail(customer.Email);
+            customer.Phone = NormalizePhone(customer.Phone);
+
+            context.Customers.Update(customer);
+
+            await context.SaveChangesAsync();
+            return customer;
         }
 
-        public Task<bool> DeleteCustomerAsync(int customerId)
+        public async Task<bool> DeleteCustomerAsync(int customerId)
         {
-            throw new NotImplementedException();
+            var deletedRows = await context.Customers
+               .Where(c => c.CustomerId == customerId)
+               .ExecuteDeleteAsync();
+
+            return deletedRows > 0;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace RestaurantApi.Extensions
             services.AddScoped<IMenuItemService, MenuItemService>();
             services.AddScoped<IAvailabilityService, AvailabilityService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<ITableService, TableService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             return services;
         }
