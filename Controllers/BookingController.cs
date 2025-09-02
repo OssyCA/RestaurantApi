@@ -21,19 +21,27 @@ namespace RestaurantApi.Controllers
 
             var booking = await service.CreateBooking(request);
 
-            if (booking == null)
-                return BadRequest(ApiResponse<BookingResponseDTO>.Error("Already booked, invalid date or invalid amount"));
+            if (!booking.Success)
+            {
+                return BadRequest(ApiResponse<BookingResponseDTO>.Error(
+                    "Already booked or invalid data", booking.Errors));
+            }
+            if (booking.Data == null)
+            {
+                return BadRequest(ApiResponse<BookingResponseDTO>.Error("No booking data available"));
+            }
 
             var response = new BookingResponseDTO
             {
-                Email = booking.Customer.Email,
-                BookingId = booking.BookingId,
-                StartAt = booking.StartAt,
-                ExpireAt = booking.ExpireAt,
-                TableId = booking.RestaurantTableId
+                Email = booking.Data.Customer.Email,
+                BookingId = booking.Data.BookingId,
+                StartAt = booking.Data.StartAt,
+                ExpireAt = booking.Data.ExpireAt,
+                TableId = booking.Data.RestaurantTableId
             };
 
             return Ok(ApiResponse<BookingResponseDTO>.Ok(response, "Booking created successfully"));
+
         }
 
         [HttpGet("AllBookings")]

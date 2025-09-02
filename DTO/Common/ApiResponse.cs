@@ -30,11 +30,5 @@
             Message = message
         };
 
-        public static ApiResponse Error(string message, List<string>? errors = null) => new()
-        {
-            Success = false,
-            Message = message,
-            Errors = errors ?? new()
-        };
     }
 }

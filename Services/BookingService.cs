@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantApi.Data;
 using RestaurantApi.DTO.BookingDTOs;
+using RestaurantApi.DTO.Common;
 using RestaurantApi.Models;
 using RestaurantApi.Repositories.IRepositories;
 using RestaurantApi.Services.IServices;
@@ -10,14 +11,22 @@ namespace RestaurantApi.Services
     public class BookingService(RestaurantDbContext context, IBookingRepository repository, ITableRepository tableRepository, IAvailabilityService availabilityService): IBookingService
     {
 
-        public async Task<Booking> CreateBooking(BookingDTO request)
+        public async Task<ApiResponse<Booking>> CreateBooking(BookingDTO request)
         {
             if (await availabilityService.IsTableAvailableAsync(request.TableId, request.StartAt, request.Amount))
             {
                 var booking = await repository.CreateBooking(request);
-                return booking;
+                return new ApiResponse<Booking>
+                {
+                    Success = true,
+                    Data = booking
+                };
             }
-            return null;
+            return new ApiResponse<Booking>
+            {
+                Success = false,
+                Message = "Table is not available for the requested time"
+            };
 
         }
         public async Task<List<AllBookingDTO>> GetAllBookings()
