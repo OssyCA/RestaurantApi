@@ -66,6 +66,18 @@ namespace RestaurantApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactResturant", policy =>  
+                {
+                    policy.WithOrigins("localhost")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -77,6 +89,7 @@ namespace RestaurantApi
            
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowReactResturant");
             app.UseAuthentication();
             app.UseAuthorization();
          
