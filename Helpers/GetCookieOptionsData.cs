@@ -12,7 +12,7 @@
                 Expires = DateTimeOffset.UtcNow.AddMinutes(15)
             };
         }
-        public static CookieOptions RefreshTokenEmployeeIdCookie()
+        public static CookieOptions RefreshTokenCookie()
         {
             return new CookieOptions
             {

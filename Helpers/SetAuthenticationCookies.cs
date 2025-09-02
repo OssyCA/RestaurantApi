@@ -12,7 +12,7 @@ namespace RestaurantApi.Helpers
             }
 
             httpContext.Response.Cookies.Append("accessToken", accessToken, GetCookieOptionsData.AccessTokenCookie());
-            httpContext.Response.Cookies.Append("refreshToken", refreshToken, GetCookieOptionsData.RefreshTokenEmployeeIdCookie());
+            httpContext.Response.Cookies.Append("refreshToken", refreshToken, GetCookieOptionsData.RefreshTokenCookie());
         }
     }
 }

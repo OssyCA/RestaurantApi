@@ -36,27 +36,6 @@ namespace RestaurantApi.Services
 
             return await CreateTokenResponse(employee);
         }
-        public async Task<Employee?> RegisterEmployeeAsync(EmployeeDTO request)
-        {
-            var existingEmployee = await repository.GetEmployeeByEmail(request.Email);
-            if (existingEmployee != null)
-            {
-                return null;
-            }
-
-
-            var employee = new Employee();
-            var hashedPassword = new PasswordHasher<Employee>()
-               .HashPassword(employee, request.Password);
-
-            employee.Name = request.Name;
-            employee.Email = request.Email;
-            employee.PasswordHash = hashedPassword;
-
-            await repository.RegisterEmployee(employee);
-
-            return employee;
-        } 
         private string CreateToken(Employee employee)
         {
             var claims = new List<Claim>

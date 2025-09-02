@@ -8,5 +8,6 @@ namespace RestaurantApi.Repositories.IRepositories
         Task<Employee?> GetEmployeeByEmail(string email);
         Task<Employee?> GetEmployeeById(int id);
         Task<bool> EmployeRefreshToken(Employee employee, string refreshtoken);
+        Task<Employee?> GetEmployeeByRefreshToken(string refreshtoken);
     }
 }

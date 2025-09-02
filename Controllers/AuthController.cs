@@ -16,7 +16,7 @@ namespace RestaurantApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService service, RestaurantDbContext context) : ControllerBase
+    public class AuthController(IAuthService service, RestaurantDbContext context, IEmployeeService employeeService) : ControllerBase
     {
         [HttpPost("RegisterEmployee")]
         public async Task<ActionResult<ApiResponse<Employee>>> EmployeeRegister(EmployeeDTO request)
@@ -25,7 +25,7 @@ namespace RestaurantApi.Controllers
             {
                 return BadRequest(ApiResponse<Employee>.Error("Invalid input"));
             }
-            var employee = await service.RegisterEmployeeAsync(request);
+            var employee = await employeeService.RegisterEmployeeAsync(request);
 
             if (employee == null)
                 return BadRequest(ApiResponse<Employee>.Error("Email already used"));
@@ -87,7 +87,7 @@ namespace RestaurantApi.Controllers
                 }
 
                 HttpContext.Response.Cookies.Append("accessToken", tokenResponse.AccessToken, GetCookieOptionsData.AccessTokenCookie());
-                HttpContext.Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, GetCookieOptionsData.RefreshTokenEmployeeIdCookie());
+                HttpContext.Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, GetCookieOptionsData.RefreshTokenCookie());
 
                 return Ok(ApiResponse.Ok("Refreshed"));
             }

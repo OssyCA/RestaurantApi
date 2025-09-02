@@ -29,5 +29,9 @@ namespace RestaurantApi.Repositories
         {
             return await context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
         }
+        public async Task<Employee?> GetEmployeeByRefreshToken(string refreshtoken)
+        {
+            return await context.Employees.FirstOrDefaultAsync(e => e.RefreshToken == refreshtoken);
+        }
     }
 }
