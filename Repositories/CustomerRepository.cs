@@ -71,5 +71,14 @@ namespace RestaurantApi.Repositories
             }
         }
 
+        public Task<Customer?> UpdateCustomerAsync(Customer customer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteCustomerAsync(int customerId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
