@@ -79,7 +79,6 @@ namespace RestaurantApi.Controllers
                     RefreshToken = refreshToken
                 };
 
-                // Use the service method
                 var tokenResponse = await service.RefreshTokensAsync(refreshRequest);
 
                 if (tokenResponse == null)
@@ -87,15 +86,14 @@ namespace RestaurantApi.Controllers
                     return Unauthorized(ApiResponse.Error("soemthing went wrong"));
                 }
 
-                // Set new cookies
                 HttpContext.Response.Cookies.Append("accessToken", tokenResponse.AccessToken, GetCookieOptionsData.AccessTokenCookie());
                 HttpContext.Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, GetCookieOptionsData.RefreshTokenEmployeeIdCookie());
 
                 return Ok(ApiResponse.Ok("Refreshed"));
             }
-            catch
+            catch (Exception ex)
             {
-                return Unauthorized(ApiResponse.Error("soemthing went wrong"));
+                return Unauthorized(ApiResponse.Error($"Token refresh failed: {ex.Message}"));
             }
 
 

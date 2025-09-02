@@ -16,20 +16,13 @@ namespace RestaurantApi.Repositories
         public async Task<Employee?> GetEmployeeByEmail(string email)
         {
             return await context.Employees.FirstOrDefaultAsync(e => e.Email == email);
-        }   
+        }
         public async Task<bool> EmployeRefreshToken(Employee employee, string refreshtoken)
         {
-            try
-            {
-                employee.RefreshToken = refreshtoken;
-                employee.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
-                await context.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            employee.RefreshToken = refreshtoken;
+            employee.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
+            await context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<Employee?> GetEmployeeById(int id)

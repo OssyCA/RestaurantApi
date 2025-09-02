@@ -9,37 +9,29 @@ namespace RestaurantApi.Helpers
     {
         public static int TryGetUserIdFromToken(string? token)
         {
-            try
+            if (string.IsNullOrEmpty(token))
             {
-                if (string.IsNullOrEmpty(token))
-                {
-                    return 0;
-                }
-                var tokenHandler = new JwtSecurityTokenHandler();
-                if (!tokenHandler.CanReadToken(token))
-                {
-                    return 0;
-                }
-                var jwtToken = tokenHandler.ReadJwtToken(token);
-                var employeeId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(employeeId) || !int.TryParse(employeeId, out int userId) || userId == 0)
-                {
-                    return 0;
-                }
-                return userId;
-            }
-            catch
-            {
-               
                 return 0;
             }
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (!tokenHandler.CanReadToken(token))
+            {
+                return 0;
+            }
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            var employeeIFromClaims = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(employeeIFromClaims) || !int.TryParse(employeeIFromClaims, out int employeeId) || employeeIFromClaims == null)
+            {
+                return 0;
+            }
+            return employeeId;
         }
         public static async Task<int> GetValidatedUserIdAsync(HttpContext httpContext, RestaurantDbContext context)
         {
             int employeeId = TryGetUserIdFromToken(httpContext.Request.Cookies["accessToken"]);
 
             if (employeeId == 0 &&
-                httpContext.Request.Cookies.TryGetValue("employeeId", out string? employeeIdString) &&
+                httpContext.Request.Cookies.TryGetValue("employeeIFromClaims", out string? employeeIdString) &&
                 int.TryParse(employeeIdString, out int cookieEmployeeId) &&
                 cookieEmployeeId != 0 &&
                 httpContext.Request.Cookies.TryGetValue("refreshToken", out string? refreshToken) &&

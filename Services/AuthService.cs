@@ -16,7 +16,7 @@ using System.Text;
 
 namespace RestaurantApi.Services
 {
-    public class AuthService(RestaurantDbContext context, IConfiguration configuration, IEmployeeRepository repository) : IAuthService
+    public class AuthService( IConfiguration configuration, IEmployeeRepository repository) : IAuthService
     {
         public async Task<TokenResponseDTO?> LoginAsync(EmployeeLoginDTO request)
         {
@@ -98,14 +98,10 @@ namespace RestaurantApi.Services
         {
             return new TokenResponseDTO { AccessToken = CreateToken(employee), RefreshToken = await GenerateAndSaveRefreshToken(employee) };
         }
-        private async Task<string> GenerateAndSaveRefreshToken(Employee employee) // Change to REPO
+        private async Task<string> GenerateAndSaveRefreshToken(Employee employee)
         {
             var refreshToken = GetGenerateRefreshToken();
-
-            if (await repository.EmployeRefreshToken(employee, refreshToken) ==false)
-            {
-                throw new InvalidOperationException("Failed to save refresh token to database");
-            }
+            await repository.EmployeRefreshToken(employee, refreshToken);
             return refreshToken;
         }
         private string GetGenerateRefreshToken()
