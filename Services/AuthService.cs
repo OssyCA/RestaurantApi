@@ -34,7 +34,7 @@ namespace RestaurantApi.Services
                 return null;
             }
 
-            return await CreateTokenResponse(employee);
+            return await BuildTokenResponse(employee);
         }
         private string CreateToken(Employee employee)
         {
@@ -73,11 +73,11 @@ namespace RestaurantApi.Services
             return employee;
 
         }
-        private async Task<TokenResponseDTO> CreateTokenResponse(Employee employee)
+        private async Task<TokenResponseDTO> BuildTokenResponse(Employee employee)
         {
-            return new TokenResponseDTO { AccessToken = CreateToken(employee), RefreshToken = await GenerateAndSaveRefreshToken(employee) };
+            return new TokenResponseDTO { AccessToken = CreateToken(employee), RefreshToken = await CreateAndStoreRefreshToken(employee) };
         }
-        private async Task<string> GenerateAndSaveRefreshToken(Employee employee)
+        private async Task<string> CreateAndStoreRefreshToken(Employee employee)
         {
             var refreshToken = GetGenerateRefreshToken();
             await repository.EmployeRefreshToken(employee, refreshToken);
@@ -97,7 +97,7 @@ namespace RestaurantApi.Services
             {
                 return null;
             }
-            return await CreateTokenResponse(user);
+            return await BuildTokenResponse(user);
         }
        
     }
