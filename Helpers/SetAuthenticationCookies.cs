@@ -14,5 +14,11 @@ namespace RestaurantApi.Helpers
             httpContext.Response.Cookies.Append("accessToken", accessToken, GetCookieOptionsData.AccessTokenCookie());
             httpContext.Response.Cookies.Append("refreshToken", refreshToken, GetCookieOptionsData.RefreshTokenCookie());
         }
+        public static void ClearAuthenticationCookies(HttpContext httpContext)
+        {
+
+            httpContext.Response.Cookies.Delete("accessToken", GetCookieOptionsData.AccessTokenCookie());
+            httpContext.Response.Cookies.Delete("refreshToken", GetCookieOptionsData.RefreshTokenCookie());
+        }
     }
 }

@@ -17,10 +17,19 @@ namespace RestaurantApi.Repositories
         {
             return await context.Employees.FirstOrDefaultAsync(e => e.Email == email);
         }
-        public async Task<bool> EmployeRefreshToken(Employee employee, string refreshtoken)
+        public async Task<bool> EmployeRefreshToken(Employee employee, string? refreshtoken)
         {
             employee.RefreshToken = refreshtoken;
-            employee.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
+
+            if (refreshtoken != null)
+            {
+                employee.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
+            }
+            else
+            {
+                employee.RefreshTokenExpireTime = null;
+            }
+
             await context.SaveChangesAsync();
             return true;
         }

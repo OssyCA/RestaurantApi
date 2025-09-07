@@ -98,7 +98,36 @@ namespace RestaurantApi.Controllers
         {
             return Ok(ApiResponse.Ok("Admin in"));
         }
+        [HttpPost("Logout")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse>> Logout()
+        {
+            try
+            {
+                var employeeIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+                if (int.TryParse(employeeIdString, out int employeeId))
+                {
+                    // Hämta användaren från databasen
+                    var employee = await employeeService.GetEmployeeByIdAsync(employeeId);
+
+                    if (employee != null)
+                    {
+                        // Invalidera refresh token i databasen
+                        await employeeService.InvalidateRefreshTokenAsync(employee);
+                    }
+                }
+
+                // Använd din befintliga helper för att ta bort cookies
+                SetAuthenticationCookies.ClearAuthenticationCookies(HttpContext);
+
+                return Ok(ApiResponse.Ok("Logout successful"));
+            }
+            catch (Exception)
+            {
+                return BadRequest(ApiResponse.Error("Logout failed"));
+            }
+        }
 
     }
 }

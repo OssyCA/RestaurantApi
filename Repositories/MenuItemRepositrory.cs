@@ -31,6 +31,7 @@ namespace RestaurantApi.Repositories
 
             var wholeMenu = menus.Select(menu => new MenuItemDTO
             {
+                Id = menu.Id,   
                 Title = menu.Title,
                 Description = menu.Description,
                 ImageUrl = menu.ImageUrl,

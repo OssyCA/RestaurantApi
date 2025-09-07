@@ -4,6 +4,7 @@ namespace RestaurantApi.DTO.MenuDTOs
 {
     public class MenuItemDTO
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public string Title { get; set; } = null!;

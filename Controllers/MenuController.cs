@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantApi.DTO.Common;
 using RestaurantApi.DTO.MenuDTOs;
+using RestaurantApi.Models;
 using RestaurantApi.Services.IServices;
 
 namespace RestaurantApi.Controllers
@@ -10,6 +12,7 @@ namespace RestaurantApi.Controllers
     public class MenuController(IMenuItemService service) : ControllerBase
     {
         [HttpPost("CreateMenuItem")]
+        [Authorize(Roles = nameof(EmployeeRole.Admin))]
         public async Task<ActionResult<ApiResponse<int>>> CreateItem(MenuItemDTO dto)
         {
             if (!ModelState.IsValid)
@@ -22,6 +25,7 @@ namespace RestaurantApi.Controllers
         }
 
         [HttpPut("UpdateItem")]
+        [Authorize(Roles = nameof(EmployeeRole.Admin))]
         public async Task<ActionResult<ApiResponse<MenuItemDTO>>> UpdateItem(int id, UpdateMenuItemDTO dto)
         {
             if (!ModelState.IsValid)
@@ -43,6 +47,7 @@ namespace RestaurantApi.Controllers
         }
 
         [HttpDelete("DeleteItem/{id:int}")]
+        [Authorize(Roles = nameof(EmployeeRole.Admin))]
         public async Task<ActionResult<ApiResponse>> Delete(int id)
         {
             var ok = await service.DeleteMenuItemAsync(id);

@@ -7,5 +7,8 @@ namespace RestaurantApi.Services.IServices
     {
         Task<Employee?> RegisterEmployeeAsync(EmployeeDTO request);
         Task<Employee?> GetEmployeeByValidRefreshTokenAsync(string refreshToken);
+        Task<Employee?> GetEmployeeByIdAsync(int id);
+        Task<bool> InvalidateRefreshTokenAsync(Employee employee);
+
     }
 }

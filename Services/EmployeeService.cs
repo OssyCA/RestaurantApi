@@ -42,6 +42,17 @@ namespace RestaurantApi.Services
 
             return employee;
         }
+        public async Task<Employee?> GetEmployeeByIdAsync(int id)
+        {
+            return await employeeRepository.GetEmployeeById(id);
+        }
 
+        public async Task<bool> InvalidateRefreshTokenAsync(Employee employee)
+        {
+            employee.RefreshToken = null;
+            employee.RefreshTokenExpireTime = null;
+
+            return await employeeRepository.EmployeRefreshToken(employee, null);
+        }
     }
 }
