@@ -10,6 +10,7 @@ namespace RestaurantApi.Repositories.IRepositories
         Task<MenuItemDTO?> UpdateMenuItemAsync(int id, UpdateMenuItemDTO dto);
         Task<bool> DeleteMenuItem(int id);
         Task<List<MenuItemDTO>> GetAllMenuItems();
+        Task<MenuItem?> GetMenuItemById(int id);
 
     }
 }

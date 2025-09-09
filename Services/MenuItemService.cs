@@ -33,6 +33,23 @@ namespace RestaurantApi.Services
             return await itemRepository.GetAllMenuItems() ?? new List<MenuItemDTO>();
         }
 
+        public async Task<GetMenuItemDTO?> GetMenuItemByIdAsync(int id)
+        {
+            var menuItem = await itemRepository.GetMenuItemById(id);
+            if (menuItem == null)
+            {
+                return null;
+            }
+            return new GetMenuItemDTO
+            {
+                Title = menuItem.Title,
+                Description = menuItem.Description,
+                Price = menuItem.Price,
+                ImageUrl = menuItem.ImageUrl,
+                IsPopular = menuItem.IsPopular
+            };
+        }
+
         public async Task<MenuItemDTO?> UpdateMenuItemAsync(int id, UpdateMenuItemDTO dto)
         {
             return await itemRepository.UpdateMenuItemAsync(id, dto);

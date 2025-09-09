@@ -22,12 +22,23 @@ namespace RestaurantApi.Extensions
                             Encoding.UTF8.GetBytes(configuration["JwtSetting:Token"]!)),
                         ValidateIssuerSigningKey = true
                     };
-
+                    // look for accesstoken in cookies
                     options.Events = new JwtBearerEvents
                     {
                         OnMessageReceived = context =>
                         {
-                            context.Token = context.Request.Cookies["accessToken"];
+                            // Först kolla Authorization header
+                            var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                            if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+                            {
+                                context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                            }
+                            // Om ingen Authorization header, kolla cookies
+                            else if (context.Request.Cookies.ContainsKey("accessToken"))
+                            {
+                                context.Token = context.Request.Cookies["accessToken"];
+                            }
+
                             return Task.CompletedTask;
                         }
                     };

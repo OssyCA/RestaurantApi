@@ -8,5 +8,6 @@ namespace RestaurantApi.Services.IServices
         Task<List<MenuItemDTO>> GetAllMenuItemsAsync();
         Task<MenuItemDTO?> UpdateMenuItemAsync(int id, UpdateMenuItemDTO dto);
         Task<bool> DeleteMenuItemAsync(int id);
+        Task<GetMenuItemDTO?> GetMenuItemByIdAsync(int id);
     }
 }

@@ -23,6 +23,7 @@ namespace RestaurantApi.Repositories
             return deletedRows > 0;
 
         }
+
         public async Task<List<MenuItemDTO>> GetAllMenuItems()
         {
             var menus = await context.MenuItems.ToListAsync();
@@ -41,6 +42,13 @@ namespace RestaurantApi.Repositories
 
             return wholeMenu;
         }
+
+        public async Task<MenuItem?> GetMenuItemById(int id)
+        {
+            return await context.MenuItems
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
         public async Task<MenuItemDTO?> UpdateMenuItemAsync(int id, UpdateMenuItemDTO dto)
         {
             var menuItem = await context.MenuItems.FirstOrDefaultAsync(menu => menu.Id == id);

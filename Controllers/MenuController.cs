@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using RestaurantApi.DTO;
 using RestaurantApi.DTO.Common;
 using RestaurantApi.DTO.MenuDTOs;
 using RestaurantApi.Models;
@@ -56,6 +59,17 @@ namespace RestaurantApi.Controllers
                 return NotFound(ApiResponse.Error("Menu item not found"));
 
             return Ok(ApiResponse.Ok("Menu item deleted successfully"));
+        }
+        [HttpGet("GetItem/{id}")]
+        public async Task<ActionResult<ApiResponse<GetMenuItemDTO>>> GetMenuItem(int id)
+        {
+            var item = await service.GetMenuItemByIdAsync(id);
+
+            if (item == null)
+                return NotFound(ApiResponse<GetMenuItemDTO>.Error("Item  not found"));
+
+            return Ok(ApiResponse<GetMenuItemDTO>.Ok(item, "Item retrieved successfully"));
+
         }
     }
 }

@@ -43,7 +43,7 @@ namespace RestaurantApi.Controllers
 
             SetAuthenticationCookies.SetAuthenticationCookie(HttpContext, tokenResponse.AccessToken, tokenResponse.RefreshToken, context);
 
-            return Ok(ApiResponse.Ok("Login successful"));
+            return Ok(ApiResponse<TokenResponseDTO>.Ok(tokenResponse, "Login successful"));
         }
 
         [HttpPost("RefreshToken")] 

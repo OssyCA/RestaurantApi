@@ -9,7 +9,7 @@
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
             };
         }
         public static CookieOptions RefreshTokenCookie()
