@@ -1,12 +1,22 @@
-﻿namespace RestaurantApi.DTO.BookingDTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RestaurantApi.DTO.BookingDTOs
 {
     public class UpdateBookingDTO
     {
-        public int TableId { get; set; }
-        public string CustomerEmail { get; set; } = string.Empty;
-        public string CustomerPhone { get; set; } = string.Empty;
-        public string CustomerName { get; set; } = string.Empty;
-        public int Amount { get; set; }
-        public DateTime StartAt { get; set; }
+        public int? TableId { get; set; }
+
+        [EmailAddress]
+        public string? CustomerEmail { get; set; }
+
+        [Phone]
+        public string? CustomerPhone { get; set; }
+
+        [StringLength(100)]
+        public string? CustomerName { get; set; }
+
+        public int? Amount { get; set; }
+
+        public DateTime? StartAt { get; set; }
     }
 }

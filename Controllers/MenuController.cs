@@ -27,7 +27,7 @@ namespace RestaurantApi.Controllers
                 ApiResponse<int>.Ok(newId, "Menu item created successfully"));
         }
 
-        [HttpPut("UpdateItem")]
+        [HttpPut("UpdateItem/{id}")]
         [Authorize(Roles = nameof(EmployeeRole.Admin))]
         public async Task<ActionResult<ApiResponse<MenuItemDTO>>> UpdateItem(int id, UpdateMenuItemDTO dto)
         {

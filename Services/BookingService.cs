@@ -50,33 +50,42 @@ namespace RestaurantApi.Services
         }
         public async Task<(bool Success, List<string> ErrorMessages)> UpdateBooking(int id, UpdateBookingDTO request)
         {
-
-            var existingBooking = await repository.GetBooking(id); 
+            var existingBooking = await repository.GetBooking(id);
             if (existingBooking == null)
             {
                 var errorMessage = new List<string> { "Booking not found" };
                 return (false, errorMessage);
             }
-
-            var table = await tableRepository.GetTableAsync(request.TableId);
-            if (table == null)
+            if (request.TableId.HasValue)
             {
-                var errorMessage = new List<string> { "Table not found" };
-                return (false, errorMessage);
+                var table = await tableRepository.GetTableAsync(request.TableId.Value);
+                if (table == null)
+                {
+                    var errorMessage = new List<string> { "Table not found" };
+                    return (false, errorMessage);
+                }
             }
 
-
-            if (!await availabilityService.IsTableAvailableAsync(request.TableId, request.StartAt, request.Amount, id))
+            if (request.TableId.HasValue || request.StartAt.HasValue)
             {
-                var errorMessage = new List<string> { "Table not available for the requested time" };
-                return (false, errorMessage);
+                var tableIdToCheck = request.TableId ?? existingBooking.TableId;
+                var startTimeToCheck = request.StartAt ?? existingBooking.StartAt;
+                var amountToCheck = request.Amount ?? existingBooking.Amount;
+
+                if (!await availabilityService.IsTableAvailableAsync(
+                    tableIdToCheck, startTimeToCheck, amountToCheck, id))
+                {
+                    var errorMessage = new List<string> { "Table not available for the requested time" };
+                    return (false, errorMessage);
+                }
             }
 
-            var updatedBooking = await repository.UpdateBooking(id, request); 
+            var updatedBooking = await repository.UpdateBooking(id, request);
             if (updatedBooking != null)
             {
                 return (true, new List<string>());
             }
+
             return (false, new List<string> { "Failed to update booking" });
         }
         public async Task<(bool Success, List<string> ErrorMessages)> DeleteBooking(int id)

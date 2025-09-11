@@ -79,12 +79,13 @@ namespace RestaurantApi.Repositories
 
             if (booking == null) return null;
 
-            if (booking.Customer.Email != request.CustomerEmail)
+            if (!string.IsNullOrWhiteSpace(request.CustomerEmail) &&
+                booking.Customer.Email != request.CustomerEmail)
             {
                 var newCustomer = await customerRepository.GetOrCreateCustomerAsync(
-                    request.CustomerName,
+                    request.CustomerName ?? booking.Customer.Name,
                     request.CustomerEmail,
-                    request.CustomerPhone);
+                    request.CustomerPhone ?? booking.Customer.Phone);
 
                 if (newCustomer != null)
                 {
@@ -93,13 +94,22 @@ namespace RestaurantApi.Repositories
             }
             else
             {
-                booking.Customer.Name = request.CustomerName;
-                booking.Customer.Phone = request.CustomerPhone;
+
+                if (!string.IsNullOrWhiteSpace(request.CustomerName))
+                    booking.Customer.Name = request.CustomerName.Trim();
+
+                if (!string.IsNullOrWhiteSpace(request.CustomerPhone))
+                    booking.Customer.Phone = request.CustomerPhone.Trim();
             }
 
-            booking.RestaurantTableId = request.TableId;
-            booking.Amount = request.Amount;
-            booking.StartAt = request.StartAt;
+            if (request.TableId.HasValue)
+                booking.RestaurantTableId = request.TableId.Value;
+
+            if (request.Amount.HasValue)
+                booking.Amount = request.Amount.Value;
+
+            if (request.StartAt.HasValue)
+                booking.StartAt = request.StartAt.Value;
 
             await context.SaveChangesAsync();
             return request;

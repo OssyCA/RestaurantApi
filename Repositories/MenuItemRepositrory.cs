@@ -59,8 +59,8 @@ namespace RestaurantApi.Repositories
             }
 
             if (!string.IsNullOrWhiteSpace(dto.Title)) menuItem.Title = dto.Title.Trim();
-            if (dto.Description != null) menuItem.Description = dto.Description;
-            if (dto.ImageUrl != null) menuItem.ImageUrl = dto.ImageUrl;
+            if (!string.IsNullOrWhiteSpace(dto.Description)) menuItem.Description = dto.Description; 
+            if (!string.IsNullOrWhiteSpace(dto.ImageUrl)) menuItem.ImageUrl = dto.ImageUrl;          
             if (dto.Price.HasValue) menuItem.Price = dto.Price.Value;
             if (dto.IsPopular.HasValue) menuItem.IsPopular = dto.IsPopular.Value;
 
