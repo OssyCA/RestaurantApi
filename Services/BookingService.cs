@@ -35,10 +35,15 @@ namespace RestaurantApi.Services
 
             var bookingDTOs = bookings.Select(b => new AllBookingDTO
             {
+                Id = b.BookingId,
+                Amount = b.Amount,
+                TableNumber = b.RestaurantTable.TableNumber,
                 TableId = b.RestaurantTableId,
                 StartTime = b.StartAt,
+                EndTime = b.StartAt.AddHours(2),
                 CustomerName = b.Customer.Name,
                 CustomerEmail = b.Customer.Email,
+                CustomerPhone = b.Customer.Phone
             }).ToList();
 
             return bookingDTOs;
@@ -73,7 +78,7 @@ namespace RestaurantApi.Services
                 var amountToCheck = request.Amount ?? existingBooking.Amount;
 
                 if (!await availabilityService.IsTableAvailableAsync(
-                    tableIdToCheck, startTimeToCheck, amountToCheck, id))
+                    tableIdToCheck, startTimeToCheck, amountToCheck, id)) 
                 {
                     var errorMessage = new List<string> { "Table not available for the requested time" };
                     return (false, errorMessage);

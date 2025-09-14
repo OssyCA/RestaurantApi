@@ -7,6 +7,7 @@ namespace RestaurantApi.Repositories.IRepositories
         Task<Customer?> GetCustomerByEmailOrPhoneAsync(string email, string phone);
         Task<Customer> CreateCustomerAsync(Customer customer);
         Task<Customer?> GetOrCreateCustomerAsync(string name, string email, string phone);
+
         Task<Customer?> UpdateCustomerAsync(Customer customer);
         Task<bool> DeleteCustomerAsync(int customerId);
     }

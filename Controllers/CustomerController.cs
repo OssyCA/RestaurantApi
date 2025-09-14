@@ -23,18 +23,33 @@ namespace RestaurantApi.Controllers
             if (!result.Success)
                 return BadRequest(result);
 
-            return CreatedAtAction(nameof(GetCustomer),
-                new { email = result.Data.Email, phone = result.Data.Phone }, result);
+            return CreatedAtAction(nameof(GetCustomerByEmail),
+                new { email = result.Data.Email}, result);
         }
 
-        [HttpGet("GetCustomer")]
+        [HttpGet("GetCustomerByEmail/{email}")]
         [Authorize(Roles = nameof(EmployeeRole.Admin))]
-        public async Task<ActionResult<ApiResponse<CustomerDTO>>> GetCustomer([FromQuery] string email, [FromQuery] string phone)
+        public async Task<ActionResult<ApiResponse<CustomerDTO>>> GetCustomerByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(phone))
-                return BadRequest(ApiResponse<CustomerDTO>.Error("Either email or phone must be provided"));
+            if (string.IsNullOrEmpty(email))
+                return BadRequest(ApiResponse<CustomerDTO>.Error("Email is required"));
 
-            var customer = await service.GetCustomerByEmailOrPhoneAsync(email ?? "", phone ?? "");
+            var customer = await service.GetCustomerByEmailOrPhoneAsync(email, "");
+
+            if (customer == null)
+                return NotFound(ApiResponse<CustomerDTO>.Error("Customer not found"));
+
+            return Ok(ApiResponse<CustomerDTO>.Ok(customer, "Customer retrieved successfully"));
+        }
+
+        [HttpGet("GetCustomerByPhone{phone}")]
+        [Authorize(Roles = nameof(EmployeeRole.Admin))]
+        public async Task<ActionResult<ApiResponse<CustomerDTO>>> GetCustomerByPhone(string phone)
+        {
+            if (string.IsNullOrEmpty(phone))
+                return BadRequest(ApiResponse<CustomerDTO>.Error("Phone is required"));
+
+            var customer = await service.GetCustomerByEmailOrPhoneAsync("", phone);
 
             if (customer == null)
                 return NotFound(ApiResponse<CustomerDTO>.Error("Customer not found"));
