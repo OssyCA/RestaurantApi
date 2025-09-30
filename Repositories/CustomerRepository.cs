@@ -38,6 +38,7 @@ namespace RestaurantApi.Repositories
             var e = NormalizeEmail(email);
             var p = NormalizePhone(phone);
 
+            // First, try to get existing customer
             var existing = await GetCustomerByEmailOrPhoneAsync(e, p);
             if (existing != null)
             {
@@ -52,21 +53,23 @@ namespace RestaurantApi.Repositories
                 }
 
                 return existing;
-
             }
+
+            // If no existing customer, create new one
             var newCustomer = new Customer
             {
                 Name = name,
                 Email = e,
                 Phone = p
             };
+
             try
             {
                 return await CreateCustomerAsync(newCustomer);
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("duplicate key") == true)
             {
-
+         
                 return await GetCustomerByEmailOrPhoneAsync(e, p);
             }
         }

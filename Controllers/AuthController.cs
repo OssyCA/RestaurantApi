@@ -30,7 +30,7 @@ namespace RestaurantApi.Controllers
             if (employee == null)
                 return BadRequest(ApiResponse<Employee>.Error("Email already used"));
 
-            return Ok(ApiResponse<Employee>.Ok(employee, "Employee registered"));
+            return Ok(ApiResponse.Ok("Employee registered"));
         }
 
         [HttpPost("LoginEmployee")]

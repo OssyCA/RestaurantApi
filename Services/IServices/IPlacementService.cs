@@ -5,6 +5,6 @@ namespace RestaurantApi.Services.IServices
 {
     public interface IPlacementService
     {
-        Task<RestaurantTable> AssignTable(); 
+        Task<RestaurantTable> AssignTable(DateTime requestStartTime, int amount); 
     }
 }

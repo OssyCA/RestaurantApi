@@ -22,6 +22,7 @@ namespace RestaurantApi.Services
                 {
                     freeTables.Add(new AvailableTablesDTO
                     {
+                        TableId = table.TableId,
                         TableNumber = table.TableNumber,
                         Capacity = table.Capacity,
                     });

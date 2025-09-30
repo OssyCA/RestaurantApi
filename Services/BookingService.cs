@@ -13,21 +13,31 @@ namespace RestaurantApi.Services
 
         public async Task<ApiResponse<Booking>> CreateBooking(BookingDTO request)
         {
-            if (await availabilityService.IsTableAvailableAsync(request.TableId, request.StartAt, request.Amount))
+            try
             {
-                var booking = await repository.CreateBooking(request);
+                if (await availabilityService.IsTableAvailableAsync(request.TableId, request.StartAt, request.Amount))
+                {
+                    var booking = await repository.CreateBooking(request);
+                    return new ApiResponse<Booking>
+                    {
+                        Success = true,
+                        Data = booking
+                    };
+                }
                 return new ApiResponse<Booking>
                 {
-                    Success = true,
-                    Data = booking
+                    Success = false,
+                    Message = "Table is not available for the requested time"
                 };
             }
-            return new ApiResponse<Booking>
+            catch (DbUpdateException ex) when (ex.InnerException?.Message?.Contains("duplicate key") == true)
             {
-                Success = false,
-                Message = "Table is not available for the requested time"
-            };
-
+                return new ApiResponse<Booking>
+                {
+                    Success = false,
+                    Message = "A booking conflict occurred. Please try again."
+                };
+            }
         }
         public async Task<List<AllBookingDTO>> GetAllBookings()
         {
