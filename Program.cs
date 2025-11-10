@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 using RestaurantApi.Extensions;
@@ -11,6 +13,9 @@ namespace RestaurantApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var keyVaultUri = builder.Configuration["KeyVault:VaultUri"];
+            var secretClient = new SecretClient(new Uri(keyVaultUri!), new DefaultAzureCredential());
+            builder.Services.AddSingleton(secretClient);
             // Add services to the container
             builder.Services.AddRateLimiter(options =>
             {
@@ -26,7 +31,7 @@ namespace RestaurantApi
 
             });
             builder.Services.AddControllers();
-            builder.Services.AddDatabase(builder.Configuration);
+            builder.Services.AddDatabase(builder.Configuration, secretClient);
             builder.Services.AddJwtAuthentication(builder.Configuration);
             builder.Services.AddRepositories();
             builder.Services.AddApplicationServices();
