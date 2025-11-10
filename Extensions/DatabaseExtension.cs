@@ -12,8 +12,8 @@ namespace RestaurantApi.Extensions
             var connectionString = secretClient.GetSecret("DbConString").Value.Value;
             services.AddDbContext<RestaurantDbContext>(options =>
             {
-                //options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString"));
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString"));
+                //options.UseSqlServer(connectionString);
             });
 
             return services;
