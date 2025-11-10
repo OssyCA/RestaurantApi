@@ -31,7 +31,7 @@ namespace RestaurantApi.Extensions
                             var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
                             if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
                             {
-                                context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                                context.Token = authHeader["Bearer ".Length..].Trim();
                             }
                             // Om ingen Authorization header, kolla cookies
                             else if (context.Request.Cookies.ContainsKey("accessToken"))

@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.RateLimiting;
 using RestaurantApi.Extensions;
+using System.Threading.RateLimiting;
 
 namespace RestaurantApi
 {
@@ -9,6 +12,19 @@ namespace RestaurantApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("LimitedPolicy", config =>
+                {
+                    config.PermitLimit = 1;
+                    config.Window = TimeSpan.FromSeconds(5);
+                    config.QueueLimit = 1;
+                });
+
+                
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests; // Too Many Requests status code 
+
+            });
             builder.Services.AddControllers();
             builder.Services.AddDatabase(builder.Configuration);
             builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -33,7 +49,10 @@ namespace RestaurantApi
             app.UseCors("AllowReactRestaurant");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseRateLimiter();
             app.MapControllers();
+            //GLobal RateLimit
+            //app.MapControllers().RequireRateLimiting("LimitedPolicy");
 
             app.Run();
         }

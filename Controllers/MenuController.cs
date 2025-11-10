@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RestaurantApi.DTO;
 using RestaurantApi.DTO.Common;
@@ -43,6 +44,7 @@ namespace RestaurantApi.Controllers
         }
 
         [HttpGet("GetWholeMenu")]
+        [EnableRateLimiting("LimitedPolicy")]
         public async Task<ActionResult<ApiResponse<List<MenuItemDTO>>>> GetAll()
         {
             var items = await service.GetAllMenuItemsAsync();
