@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantApi.Services
 {
-    public class AuthService( IConfiguration configuration, IEmployeeRepository repository, SecretClient secretClient) : IAuthService
+    public class AuthService( IConfiguration configuration, IEmployeeRepository repository) : IAuthService
     {
         public async Task<TokenResponseDTO?> LoginAsync(EmployeeLoginDTO request)
         {
