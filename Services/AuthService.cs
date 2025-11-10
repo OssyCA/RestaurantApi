@@ -40,7 +40,7 @@ namespace RestaurantApi.Services
         }
         private async Task<string> CreateToken(Employee employee)
         {
-            var signingKey = await secretClient.GetSecretAsync("JWT-SECRET-KEY");
+            //var signingKey = await secretClient.GetSecretAsync("JWT-SECRET-KEY");
             var claims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, employee.EmployeeId.ToString()),
@@ -49,9 +49,9 @@ namespace RestaurantApi.Services
                 new(ClaimTypes.Role, employee.EmployeeRole.ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey.ToString()));
-            //var key = new SymmetricSecurityKey(
-            //   Encoding.UTF8.GetBytes(configuration.GetValue<string>("JwtSetting:Token")!));
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey.ToString()));
+            var key = new SymmetricSecurityKey(
+               Encoding.UTF8.GetBytes(configuration.GetValue<string>("JwtSetting:Token")!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 

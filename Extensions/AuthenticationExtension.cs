@@ -7,9 +7,9 @@ namespace RestaurantApi.Extensions
 {
     public static class AuthenticationExtension
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration, SecretClient secretClient)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var signingKey = secretClient.GetSecret("JWT-SECRET-KEY");
+            //var signingKey = secretClient.GetSecret("JWT-SECRET-KEY");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -20,7 +20,10 @@ namespace RestaurantApi.Extensions
                         ValidateAudience = true,
                         ValidAudience = configuration["JwtSetting:Audience"],
                         ValidateLifetime = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey.ToString())),
+                        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey.ToString())),
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configuration.GetValue<string>("JwtSetting:Token")!)),
+
                         ValidateIssuerSigningKey = true
                     };
                     // look for accesstoken in cookies

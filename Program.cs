@@ -13,9 +13,9 @@ namespace RestaurantApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var keyVaultUri = builder.Configuration["KeyVault:VaultUri"];
-            var secretClient = new SecretClient(new Uri(keyVaultUri!), new DefaultAzureCredential());
-            builder.Services.AddSingleton(secretClient);
+            //var keyVaultUri = builder.Configuration["KeyVault:VaultUri"];
+            //var secretClient = new SecretClient(new Uri(keyVaultUri!), new DefaultAzureCredential());
+            //builder.Services.AddSingleton(secretClient);
             // Add services to the container
             builder.Services.AddRateLimiter(options =>
             {
@@ -31,8 +31,10 @@ namespace RestaurantApi
 
             });
             builder.Services.AddControllers();
-            builder.Services.AddDatabase(builder.Configuration, secretClient);
-            builder.Services.AddJwtAuthentication(builder.Configuration, secretClient);
+            builder.Services.AddDatabase(builder.Configuration);
+            builder.Services.AddJwtAuthentication(builder.Configuration);
+            //builder.Services.AddDatabase(builder.Configuration, secretClient);
+            //builder.Services.AddJwtAuthentication(builder.Configuration, secretClient);
             builder.Services.AddRepositories();
             builder.Services.AddApplicationServices();
             builder.Services.AddCorsPolicy();

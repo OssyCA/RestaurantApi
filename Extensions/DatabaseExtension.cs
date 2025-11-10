@@ -6,10 +6,10 @@ namespace RestaurantApi.Extensions
 {
     public static class DatabaseExtension
     {
-        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration, SecretClient secretClient)
+        public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
 
-            var connectionString = secretClient.GetSecret("DbConString").Value.Value;
+            //var connectionString = secretClient.GetSecret("DbConString").Value.Value;
             services.AddDbContext<RestaurantDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnectionString"));
