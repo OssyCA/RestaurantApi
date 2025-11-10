@@ -32,7 +32,7 @@ namespace RestaurantApi
             });
             builder.Services.AddControllers();
             builder.Services.AddDatabase(builder.Configuration, secretClient);
-            builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddJwtAuthentication(builder.Configuration, secretClient);
             builder.Services.AddRepositories();
             builder.Services.AddApplicationServices();
             builder.Services.AddCorsPolicy();

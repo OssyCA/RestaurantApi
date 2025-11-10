@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+﻿using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,10 +14,11 @@ using System.Security.AccessControl;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RestaurantApi.Services
 {
-    public class AuthService( IConfiguration configuration, IEmployeeRepository repository) : IAuthService
+    public class AuthService( IConfiguration configuration, IEmployeeRepository repository, SecretClient secretClient) : IAuthService
     {
         public async Task<TokenResponseDTO?> LoginAsync(EmployeeLoginDTO request)
         {
@@ -36,8 +38,9 @@ namespace RestaurantApi.Services
 
             return await BuildTokenResponse(employee);
         }
-        private string CreateToken(Employee employee)
+        private async Task<string> CreateToken(Employee employee)
         {
+            var signingKey = await secretClient.GetSecretAsync("JWT-SECRET-KEY");
             var claims = new List<Claim>
             {
                 new(ClaimTypes.NameIdentifier, employee.EmployeeId.ToString()),
@@ -46,8 +49,9 @@ namespace RestaurantApi.Services
                 new(ClaimTypes.Role, employee.EmployeeRole.ToString())
             };
 
-            var key = new SymmetricSecurityKey(
-               Encoding.UTF8.GetBytes(configuration.GetValue<string>("JwtSetting:Token")!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey.ToString()));
+            //var key = new SymmetricSecurityKey(
+            //   Encoding.UTF8.GetBytes(configuration.GetValue<string>("JwtSetting:Token")!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
@@ -75,7 +79,7 @@ namespace RestaurantApi.Services
         }
         private async Task<TokenResponseDTO> BuildTokenResponse(Employee employee)
         {
-            return new TokenResponseDTO { AccessToken = CreateToken(employee), RefreshToken = await CreateAndStoreRefreshToken(employee) };
+            return new TokenResponseDTO { AccessToken = await CreateToken(employee), RefreshToken = await CreateAndStoreRefreshToken(employee) };
         }
         private async Task<string> CreateAndStoreRefreshToken(Employee employee)
         {

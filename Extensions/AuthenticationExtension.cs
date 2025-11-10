@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -6,8 +7,9 @@ namespace RestaurantApi.Extensions
 {
     public static class AuthenticationExtension
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration, SecretClient secretClient)
         {
+            var signingKey = secretClient.GetSecret("JWT-SECRET-KEY");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -18,8 +20,7 @@ namespace RestaurantApi.Extensions
                         ValidateAudience = true,
                         ValidAudience = configuration["JwtSetting:Audience"],
                         ValidateLifetime = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(configuration["JwtSetting:Token"]!)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey.ToString())),
                         ValidateIssuerSigningKey = true
                     };
                     // look for accesstoken in cookies
